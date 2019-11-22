@@ -1,5 +1,3 @@
-from time import sleep
-
 from util import Dictionary, Assistant
 
 
@@ -10,5 +8,5 @@ class Galileo:
 
     def start_service(self):
         while True:
-            self.assistant.speak('Galileo ist einsatzbereit!')
-            sleep(1)
+            text = self.assistant.listen()
+            self.assistant.speak(text)

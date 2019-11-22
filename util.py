@@ -11,14 +11,20 @@ class Assistant:
         self.lang = lang
 
     def speak(self, text, filename='sound.mp3'):
-        gTTS(text=text, lang=self.lang).save(filename)
-        playsound(filename)
-        remove(filename)
+        try:
+            gTTS(text=text, lang=self.lang).save(filename)
+            playsound(filename)
+            remove(filename)
+        except:
+            pass
 
     def listen(self):
-        recognizer = Recognizer()
-        with Microphone() as source:
-            return recognizer.recognize_google(recognizer.listen(source), language=self.lang)
+        try:
+            recognizer = Recognizer()
+            with Microphone() as source:
+                return recognizer.recognize_google(recognizer.listen(source), language=self.lang)
+        except:
+            return ''
 
 
 class Dictionary:
