@@ -1,5 +1,6 @@
-from util import Dictionary, Assistant
 from time import sleep
+
+from util import Dictionary, Assistant
 
 
 class Galileo:
