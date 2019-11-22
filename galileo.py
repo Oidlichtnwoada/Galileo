@@ -8,4 +8,3 @@ class Galileo:
 
     def start_service(self):
         self.assistant.speak('Galileo hat gestartet')
-        self.assistant.speak(f'Du hast {self.assistant.listen()} gesagt')
