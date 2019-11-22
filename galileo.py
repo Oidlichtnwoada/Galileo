@@ -1,3 +1,7 @@
+from time import *
+
 while (True):
-	pass
+	print('I am Galileo')
+	sleep(1)
+
 
