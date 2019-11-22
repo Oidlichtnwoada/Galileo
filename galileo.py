@@ -1,6 +1,11 @@
-from time import *
-from util import speak, listen
+from util import Dictionary, Assistant
 
-while (True):
-	speak(listen(),'de')
-	sleep(10)
+
+class Galileo:
+    def __init__(self, lang='en'):
+        self.assistant = Assistant(lang=lang)
+        self.dictionary = Dictionary()
+
+    def start_service(self):
+        self.assistant.speak('Galileo hat gestartet')
+        self.assistant.speak(f'Du hast {self.assistant.listen()} gesagt')
