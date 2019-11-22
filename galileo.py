@@ -1,7 +1,6 @@
 from time import *
+from util import speak, listen
 
 while (True):
-	print('I am Galileo')
-	sleep(1)
-
-
+	speak(listen(),'de')
+	sleep(10)
