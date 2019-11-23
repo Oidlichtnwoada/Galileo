@@ -13,10 +13,14 @@ class Assistant:
     def speak(self, text, filename='sound.mp3'):
         try:
             gTTS(text=text, lang=self.lang).save(filename)
-            playsound(filename)
+            self.play_sound(filename)
             remove(filename)
         except (gTTSError, AssertionError):
             pass
+
+    @staticmethod
+    def play_sound(filename):
+        playsound(filename)
 
     def listen(self):
         try:
