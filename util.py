@@ -20,12 +20,12 @@ class Assistant:
             pass
 
     @staticmethod
-    def play_sound(filename):
-        with open(filename) as sound_file:
-            pygame.mixer.music.load(sound_file)
-            pygame.mixer.music.play()
-            while pygame.mixer.music.get_busy():
-                pass
+    def play_sound(filename, placeholder_file='dummy.mp3'):
+        pygame.mixer.music.load(filename)
+        pygame.mixer.music.play()
+        while pygame.mixer.music.get_busy():
+            pass
+        pygame.mixer.music.load(placeholder_file)
 
     def listen(self):
         try:
