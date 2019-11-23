@@ -11,6 +11,7 @@ class Galileo:
     EXPLANATION_INPUT = 'Bitte sprich die Erklärung zu dem gewünschten Thema!'
     MISSING_SUBJECT = 'Für dieses Thema habe ich im Moment noch keinen Eintrag gespeichert!'
     THANK_YOU = 'Danke für deine Hilfe!'
+    INVALID_ANSWER = 'Du hast nichts gesagt, daher wird der aktuelle Vorgang abgebrochen'
 
     def __init__(self, lang='en'):
         self.assistant = Assistant(lang=lang)
@@ -31,6 +32,8 @@ class Galileo:
     def process_explanation(self):
         self.assistant.speak(self.SUBJECT_QUESTION_OUTPUT)
         answer = self.assistant.listen()
+        if not self.check_answer(answer):
+            return
         for key in self.dictionary.get_dict():
             if key in answer:
                 self.assistant.speak(self.dictionary.get_dict()[key])
@@ -39,7 +42,19 @@ class Galileo:
 
     def get_explanation(self):
         self.assistant.speak(self.SUBJECT_QUESTION_INPUT)
-        answer = self.assistant.listen()
+        first_answer = self.assistant.listen()
+        if not self.check_answer(first_answer):
+            return
         self.assistant.speak(self.EXPLANATION_INPUT)
-        self.dictionary.add_value(answer, self.assistant.listen())
+        second_answer = self.assistant.listen()
+        if not self.check_answer(second_answer):
+            return
+        self.dictionary.add_value(first_answer, second_answer)
         self.assistant.speak(self.THANK_YOU)
+
+    def check_answer(self, answer):
+        if answer == '':
+            self.assistant.speak(self.INVALID_ANSWER)
+            return False
+        else:
+            return True
