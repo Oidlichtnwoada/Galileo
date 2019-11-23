@@ -10,6 +10,7 @@ class Galileo:
     SUBJECT_QUESTION_INPUT = 'Bitte nenne das Thema, zu dem du eine Erklärung eingeben möchtest!'
     EXPLANATION_INPUT = 'Bitte sprich die Erklärung zu dem gewünschten Thema!'
     MISSING_SUBJECT = 'Für dieses Thema habe ich im Moment noch keinen Eintrag gespeichert!'
+    THANK_YOU = 'Danke für deine Hilfe!'
 
     def __init__(self, lang='en'):
         self.assistant = Assistant(lang=lang)
@@ -41,3 +42,4 @@ class Galileo:
         answer = self.assistant.listen()
         self.assistant.speak(self.EXPLANATION_INPUT)
         self.dictionary.add_value(answer, self.assistant.listen())
+        self.assistant.speak(self.THANK_YOU)
