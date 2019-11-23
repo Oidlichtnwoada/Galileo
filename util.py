@@ -33,7 +33,7 @@ class Assistant:
                 recognizer = Recognizer()
                 recognizer.adjust_for_ambient_noise(source)
                 audio = recognizer.listen(source)
-                return recognizer.recognize_google(audio, language=self.lang)
+                return recognizer.recognize_google(audio, language=self.lang).lower()
         except (UnknownValueError, RequestError):
             return ''
 
