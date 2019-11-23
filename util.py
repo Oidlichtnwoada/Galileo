@@ -34,15 +34,15 @@ class Dictionary:
         self.dictionary_path = dictionary_path
         try:
             self.get_dict()
-        except JSONDecodeError:
+        except (JSONDecodeError, FileNotFoundError):
             self.save_dict({})
 
     def get_dict(self):
-        with open(self.dictionary_path, 'r+') as file:
+        with open(self.dictionary_path, 'r') as file:
             return loads(file.read())
 
     def save_dict(self, dictionary):
-        with open(self.dictionary_path, 'w+') as file:
+        with open(self.dictionary_path, 'w') as file:
             dump(dictionary, file)
 
     def add_value(self, key, value):
