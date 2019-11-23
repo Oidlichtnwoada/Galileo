@@ -1,4 +1,4 @@
-from json import loads, dump
+from json import loads, dump, JSONDecodeError
 from os import remove
 
 from gtts import gTTS, gTTSError
@@ -32,13 +32,17 @@ class Assistant:
 class Dictionary:
     def __init__(self, dictionary_path='dictionary.json'):
         self.dictionary_path = dictionary_path
+        try:
+            self.get_dict()
+        except JSONDecodeError:
+            self.save_dict({})
 
     def get_dict(self):
-        with open(self.dictionary_path, 'r') as file:
+        with open(self.dictionary_path, 'r+') as file:
             return loads(file.read())
 
     def save_dict(self, dictionary):
-        with open(self.dictionary_path, 'w') as file:
+        with open(self.dictionary_path, 'w+') as file:
             dump(dictionary, file)
 
     def add_value(self, key, value):
