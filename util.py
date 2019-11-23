@@ -1,6 +1,7 @@
 from json import loads, dump, JSONDecodeError
 from os import remove
 
+import pygame
 from gtts import gTTS, gTTSError
 from playsound import playsound
 from speech_recognition import Recognizer, Microphone, UnknownValueError, RequestError
@@ -20,7 +21,11 @@ class Assistant:
 
     @staticmethod
     def play_sound(filename):
-        playsound(filename)
+        pygame.mixer.init()
+	pygame.mixer.music.load(filename)
+	pygame.mixer.music.play()
+	while pygame.mixer.music.get_busy() == True:
+    		pass
 
     def listen(self):
         try:
