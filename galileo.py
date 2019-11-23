@@ -9,4 +9,5 @@ class Galileo:
     def start_service(self):
         while True:
             text = self.assistant.listen()
+            print(text)
             self.assistant.speak(text)
