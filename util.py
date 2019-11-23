@@ -15,7 +15,7 @@ class Assistant:
             gTTS(text=text, lang=self.lang).save(filename)
             playsound(filename)
             remove(filename)
-        except gTTSError:
+        except (gTTSError, AssertionError):
             pass
 
     def listen(self):
