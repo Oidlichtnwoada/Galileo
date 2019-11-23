@@ -1,9 +1,9 @@
 from json import loads, dump
 from os import remove
 
-from gtts import gTTS
+from gtts import gTTS, gTTSError
 from playsound import playsound
-from speech_recognition import Recognizer, Microphone
+from speech_recognition import Recognizer, Microphone, UnknownValueError, RequestError
 
 
 class Assistant:
@@ -15,15 +15,17 @@ class Assistant:
             gTTS(text=text, lang=self.lang).save(filename)
             playsound(filename)
             remove(filename)
-        except:
+        except gTTSError:
             pass
 
     def listen(self):
         try:
-            recognizer = Recognizer()
             with Microphone() as source:
-                return recognizer.recognize_google(recognizer.listen(source), language=self.lang)
-        except:
+                recognizer = Recognizer()
+                recognizer.adjust_for_ambient_noise(source)
+                audio = recognizer.listen(source)
+                return recognizer.recognize_google(audio, language=self.lang)
+        except (UnknownValueError, RequestError):
             return ''
 
 
