@@ -1,60 +1,68 @@
+from wikipedia import *
+
 from util import Dictionary, Assistant
 
 
 class Galileo:
-    OPENING_QUESTION = 'Möchtest du eine Erklärung erhalten oder eine Erklärung eingeben?'
-    INPUT_SEQ = 'eingeben'
-    OUTPUT_SEQ = 'erhalten'
-    APOLOGIZE_ANSWER = 'Tut mir leid, das kann ich noch nicht!'
-    SUBJECT_QUESTION_OUTPUT = 'Bitte nenne das Thema, zu dem du eine Erklärung wünschst!'
-    SUBJECT_QUESTION_INPUT = 'Bitte nenne das Thema, zu dem du eine Erklärung eingeben möchtest!'
-    EXPLANATION_INPUT = 'Bitte sprich die Erklärung zu dem gewünschten Thema!'
-    MISSING_SUBJECT = 'Für dieses Thema habe ich im Moment noch keinen Eintrag gespeichert!'
-    THANK_YOU = 'Danke für deine Hilfe!'
-    INVALID_ANSWER = 'Du hast nichts gesagt, daher wird der aktuelle Vorgang abgebrochen'
 
-    def __init__(self, lang='en'):
-        self.assistant = Assistant(lang=lang)
+    def __init__(self):
+        self.assistant = Assistant(lang='de')
         self.dictionary = Dictionary()
+        set_lang('de')
 
     def start_service(self):
         while True:
-            if self.__class__.__name__.lower() in self.assistant.listen():
-                self.assistant.speak(self.OPENING_QUESTION)
+            if "galileo" in self.assistant.listen():
+                self.assistant.speak('Hallo, möchtest du eine Erklärung erhalten oder eine Erklärung eingeben?')
                 answer = self.assistant.listen()
-                if self.OUTPUT_SEQ in answer:
+                if not self.check_answer(answer):
+                    continue
+                if 'erhalten' in answer:
                     self.process_explanation()
-                elif self.INPUT_SEQ in answer:
+                elif 'eingeben' in answer:
                     self.get_explanation()
                 else:
-                    self.assistant.speak(self.APOLOGIZE_ANSWER)
+                    self.assistant.speak('Tut mir leid, das kann ich noch nicht!')
 
     def process_explanation(self):
-        self.assistant.speak(self.SUBJECT_QUESTION_OUTPUT)
+        self.assistant.speak("Gib bitte ein Thema an!")
         answer = self.assistant.listen()
         if not self.check_answer(answer):
             return
-        for key in self.dictionary.get_dict():
-            if key in answer:
-                self.assistant.speak(self.dictionary.get_dict()[key])
+        for topic in self.dictionary.get_dict():
+            if topic in answer:
+                self.assistant.speak(
+                    f'Die Erklärung zu dem Thema {topic} lautet: {self.dictionary.get_dict()[topic]}!')
                 return
-        self.assistant.speak(self.MISSING_SUBJECT)
+        try:
+            self.assistant.speak(page(search(answer)[0]).summary.split('\n')[0])
+        except (IndexError | PageError):
+            self.assistant.speak(
+                f'Zu diesem Thema wurde noch keine Erklärung eingegeben, deshalb kann ich dir leider nicht helfen.')
 
     def get_explanation(self):
-        self.assistant.speak(self.SUBJECT_QUESTION_INPUT)
+        self.assistant.speak('Wie lautet dein Thema?')
         first_answer = self.assistant.listen()
         if not self.check_answer(first_answer):
             return
-        self.assistant.speak(self.EXPLANATION_INPUT)
+        self.assistant.speak('Gib die Erklärung zum entsprechenden Thema ein!')
         second_answer = self.assistant.listen()
         if not self.check_answer(second_answer):
             return
-        self.dictionary.add_value(first_answer, second_answer)
-        self.assistant.speak(self.THANK_YOU)
+        self.assistant.speak(
+            f'Deine Erklärung für das Thema {first_answer} war {second_answer}! Ist das für dich in Ordnung?')
+        third_answer = self.assistant.listen()
+        if not self.check_answer(third_answer):
+            return
+        if 'ja' in third_answer:
+            self.dictionary.add_value(first_answer, second_answer)
+            self.assistant.speak('Danke, die anderen Kinder werden sich freuen!')
+        else:
+            self.assistant.speak('Ok, dann breche ich den aktuellen Vorgang ab!')
 
     def check_answer(self, answer):
         if answer == '':
-            self.assistant.speak(self.INVALID_ANSWER)
+            self.assistant.speak('Da du nicht mehr mit mir geredet hast, breche ich den aktuellen Vorgang ab!')
             return False
         else:
             return True
